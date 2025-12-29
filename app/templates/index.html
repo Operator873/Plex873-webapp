@@ -3,7 +3,7 @@
 {% block content %}
 <div class="movie-grid">
     {% for movie in movies %}
-    <div class="movie-card" data-title="{{ movie.title }} {{ movie.year }}">
+    <div class="movie-card" data-title="{{ movie.title }} {{ movie.year }}" onclick="openMovie({{ movie.tmdbid }})">
         <div class="poster-wrapper">
             {% if movie.metadata_cache %}
                 <img src="{{ movie.metadata_cache.poster_url }}" alt="{{ movie.title }}" loading="lazy">
@@ -26,10 +26,84 @@
             {% if movie.metadata_cache and movie.metadata_cache.overview %}
                 <p class="plot">{{ movie.metadata_cache.overview | truncate(150) }}</p>
             {% else %}
-                <p class="plot">No details available.</p>
+                <p class="plot">Click for details.</p>
             {% endif %}
         </div>
     </div>
     {% endfor %}
 </div>
+
+<div id="movieModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+        
+        <div class="modal-backdrop" id="modalBackdrop">
+            <div class="backdrop-gradient"></div>
+        </div>
+
+        <div class="modal-body">
+            <h2 id="modalTitle">LOADING...</h2>
+            
+            <div class="meta-row">
+                <span id="modalYear" class="tech-badge">YEAR</span>
+                <span id="modalRuntime" class="tech-badge">0m</span>
+                <span id="modalRating" class="tech-badge">0.0</span>
+            </div>
+
+            <p id="modalTagline" class="tagline">...</p>
+            <p id="modalOverview" class="plot-text">...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openMovie(id) {
+        const modal = document.getElementById('movieModal');
+        
+        // Reset UI while loading
+        modal.style.display = 'flex';
+        document.getElementById('modalTitle').innerText = "ACCESSING DATABASE...";
+        document.getElementById('modalBackdrop').style.backgroundImage = 'none';
+
+        // Fetch from our new Flask Route
+        fetch(`/details/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if(data.error) {
+                    document.getElementById('modalTitle').innerText = "DATA CORRUPTED";
+                    return;
+                }
+
+                // Populate Data
+                document.getElementById('modalTitle').innerText = data.title;
+                document.getElementById('modalTagline').innerText = data.tagline || "";
+                document.getElementById('modalOverview').innerText = data.overview;
+                document.getElementById('modalYear').innerText = data.release_date ? data.release_date.split('-')[0] : "UNK";
+                document.getElementById('modalRuntime').innerText = (data.runtime || 0) + " min";
+                document.getElementById('modalRating').innerText = "RATING: " + (data.vote_average || 0).toFixed(1);
+
+                // Set Backdrop
+                if (data.backdrop_path) {
+                    const url = `https://image.tmdb.org/t/p/w1280${data.backdrop_path}`;
+                    document.getElementById('modalBackdrop').style.backgroundImage = `url('${url}')`;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('modalTitle').innerText = "CONNECTION FAILURE";
+            });
+    }
+
+    function closeModal() {
+        document.getElementById('movieModal').style.display = 'none';
+    }
+
+    // Close on click outside
+    window.onclick = function(event) {
+        const modal = document.getElementById('movieModal');
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+</script>
 {% endblock %}
