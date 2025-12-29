@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+
 from config import Config
 
 db = SQLAlchemy()
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -12,6 +14,7 @@ def create_app(config_class=Config):
 
     # Import routes here to avoid circular imports
     from app import routes
+
     app.register_blueprint(routes.bp)
 
     return app
