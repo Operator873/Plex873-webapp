@@ -14,7 +14,7 @@
     <header>
         <div class="navbar">
             <h1 class="plex-logo">Plex873</h1>
-            <input type="text" id="searchBox" placeholder="Filter movies..." onkeyup="filterMovies()">
+            <input type="text" id="searchBox" placeholder="Filter {{ movies|length if movies else 0 }} movies..." onkeyup="filterMovies()">
         </div>
     </header>
 
@@ -23,7 +23,7 @@
     </main>
 
     <footer>
-        <p>Library: {{ movies|length if movies else 0 }} items | Owner: Operator873</p>
+        <p>Library: {{ movies|length if movies else 0 }} items | Owner: {{ config['LIBRARY_OWNER'] }}</p>
     </footer>
 
     <script>
