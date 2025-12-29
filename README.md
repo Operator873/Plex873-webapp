@@ -1,4 +1,4 @@
-# Plex873 Database Schema
+# Plex873 Web App
 
 This project uses a MySQL/MariaDB database to manage a movie library. The schema consists of two primary tables designed to separate core ownership data from cached metadata fetched via the TMDB API.
 
