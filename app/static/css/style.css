@@ -1,15 +1,30 @@
 :root {
-    --bg-color: #141414;
-    --card-bg: #1f1f1f;
-    --text-primary: #ffffff;
-    --text-secondary: #b3b3b3;
-    --accent: #e50914; /* Netflix Red-ish */
+    /* Color Palette */
+    --bg-color: #050505;       /* Deepest Black */
+    --card-bg: #121418;        /* Dark Tech Slate */
+    --text-primary: #e0e6ed;   /* Off-white for less eye strain */
+    --text-secondary: #94a3b8; /* Cool Grey */
+    
+    /* Sci-Fi Accents */
+    --accent: #00f3ff;         /* Cyber Blue */
+    --accent-dim: rgba(0, 243, 255, 0.1);
+    --glow: rgba(0, 243, 255, 0.6);
+    
+    /* Fonts */
+    --font-head: 'Orbitron', sans-serif;
+    --font-body: 'Rajdhani', sans-serif;
 }
 
 body {
     background-color: var(--bg-color);
+    /* Subtle grid background for tech feel */
+    background-image: 
+        linear-gradient(rgba(20, 20, 20, 0.8) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 20, 20, 0.8) 1px, transparent 1px);
+    background-size: 40px 40px;
+    
     color: var(--text-primary);
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     margin: 0;
     padding: 0;
 }
@@ -20,21 +35,56 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 4%;
-    background-color: rgba(0,0,0,0.9);
+    background-color: rgba(5, 5, 5, 0.95);
+    border-bottom: 1px solid var(--accent-dim);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.05);
     position: sticky;
     top: 0;
     z-index: 100;
+    backdrop-filter: blur(5px);
 }
 
-.logo { color: var(--accent); margin: 0; }
+/* The Sci-Fi Logo */
+.plex-logo {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #ffffff;
+    text-decoration: none;
+    text-shadow: 
+        0 0 5px var(--glow),
+        0 0 10px var(--glow),
+        0 0 20px var(--accent);
+    transition: all 0.3s ease;
+}
 
+.plex-logo:hover {
+    text-shadow: 
+        0 0 5px var(--glow),
+        0 0 20px var(--glow),
+        0 0 40px var(--accent);
+}
+
+/* Terminal Style Search */
 #searchBox {
-    padding: 8px;
-    border-radius: 4px;
-    border: none;
-    background: #333;
-    color: white;
+    padding: 10px 15px;
+    border-radius: 0; /* Square edges for tech look */
+    border: 1px solid #333;
+    border-left: 3px solid var(--accent); /* Data entry marker */
+    background: #0a0a0a;
+    color: var(--accent);
     width: 250px;
+    font-family: 'Courier New', monospace;
+    transition: all 0.3s ease;
+}
+
+#searchBox:focus {
+    outline: none;
+    background: #000;
+    box-shadow: 0 0 10px var(--accent-dim);
+    border-color: var(--accent);
 }
 
 /* Grid Layout */
@@ -42,30 +92,31 @@ body {
 
 .movie-grid {
     display: grid;
-    /* Auto-fit creates columns based on min-width (200px) */
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
+    gap: 25px;
 }
 
 /* Movie Card */
 .movie-card {
     position: relative;
     background-color: var(--card-bg);
-    border-radius: 4px;
+    border-radius: 0; /* Squared edges */
+    border: 1px solid #222;
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     cursor: pointer;
 }
 
 .movie-card:hover {
-    transform: scale(1.05);
+    transform: translateY(-5px);
     z-index: 10;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-dim);
 }
 
 .poster-wrapper {
     position: relative;
-    aspect-ratio: 2/3; /* Enforces standard poster ratio */
+    aspect-ratio: 2/3;
     background-color: #000;
 }
 
@@ -73,9 +124,15 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Slight desaturation for mood, full color on hover */
+    filter: sepia(20%) contrast(1.1);
+    transition: filter 0.3s;
 }
 
-/* Fallback for missing art */
+.movie-card:hover .poster-wrapper img {
+    filter: sepia(0%) contrast(1);
+}
+
 .poster-placeholder {
     width: 100%;
     height: 100%;
@@ -84,67 +141,103 @@ body {
     justify-content: center;
     text-align: center;
     padding: 10px;
-    background: linear-gradient(45deg, #333, #444);
-    color: #ccc;
-    font-weight: bold;
+    background: repeating-linear-gradient(
+        45deg,
+        #111,
+        #111 10px,
+        #1a1a1a 10px,
+        #1a1a1a 20px
+    );
+    color: var(--text-secondary);
+    font-family: var(--font-head);
+    font-size: 0.8rem;
+    letter-spacing: 1px;
 }
 
 .rating-badge {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(0,0,0,0.7);
-    color: #ffd700;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: bold;
+    top: 0;
+    right: 0;
+    background: var(--accent);
+    color: #000;
+    padding: 4px 8px;
+    font-family: var(--font-head);
+    font-size: 0.75rem;
+    font-weight: 900;
+    clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
 }
 
 .movie-info {
-    padding: 10px;
+    padding: 12px;
+    border-top: 1px solid #222;
 }
 
 .movie-info h3 {
     margin: 0;
-    font-size: 0.9rem;
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--text-primary);
 }
 
 .year {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 4px;
+    display: block;
 }
 
-/* Overlay on Hover */
+/* HUD Overlay on Hover */
 .overview-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.9);
+    background: rgba(10, 12, 16, 0.96);
     padding: 15px;
     box-sizing: border-box;
     opacity: 0;
     transition: opacity 0.2s;
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--accent);
+    
+    /* Tech scanline effect */
+    background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
 }
 
 .movie-card:hover .overview-overlay {
     opacity: 1;
 }
 
-.overview-overlay h4 { margin-top: 0; color: var(--accent); }
-.overview-overlay .plot { font-size: 0.8rem; line-height: 1.4; }
+.overview-overlay h4 { 
+    margin-top: 0; 
+    color: var(--accent);
+    font-family: var(--font-head);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed var(--text-secondary);
+    padding-bottom: 5px;
+}
+
+.overview-overlay .plot { 
+    font-size: 0.85rem; 
+    line-height: 1.5; 
+    color: var(--text-primary);
+    margin-top: 10px;
+}
 
 footer {
     text-align: center;
     padding: 20px;
-    color: #666;
+    color: var(--text-secondary);
     margin-top: 50px;
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--accent-dim);
+    font-size: 0.8rem;
+    font-family: var(--font-head);
 }
